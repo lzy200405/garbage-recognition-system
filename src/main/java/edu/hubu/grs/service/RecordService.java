@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import edu.hubu.grs.entity.RecognitionRecord;
 
 import java.util.List;
+import java.util.Set;
 
 public interface RecordService extends IService<RecognitionRecord> {
 
@@ -34,4 +35,15 @@ public interface RecordService extends IService<RecognitionRecord> {
      */
     String getTopGarbageType(List<RecognitionRecord> records);
 
-}
+    /**
+     * 清除用户的缓存
+     * @param userId
+     */
+    void clearUserPageCache(Long userId);
+
+    /**
+     * 清除用户的最多缓存
+     * @param userId
+     */
+    void clearUserTopCache(Long userId);
+    }

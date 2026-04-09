@@ -2,7 +2,6 @@ package edu.hubu.grs.service.impl;
 
 import com.alibaba.fastjson2.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import edu.hubu.grs.entity.RecognitionRecord;
@@ -10,19 +9,18 @@ import edu.hubu.grs.mapper.RecognitionRecordMapper;
 import edu.hubu.grs.service.RecordService;
 import edu.hubu.grs.utils.RedisUtil;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.object.UpdatableSqlQuery;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
-
 
 @Service
 public class RecordServiceImpl extends ServiceImpl<RecognitionRecordMapper, RecognitionRecord> implements RecordService {
 
     @Autowired
-    RedisUtil redisUtil;
+    private RedisUtil redisUtil;  // 改为 private
 
     /**
      * 分页查询用户历史记录（带Redis缓存）
@@ -96,5 +94,65 @@ public class RecordServiceImpl extends ServiceImpl<RecognitionRecordMapper, Reco
         redisUtil.set(key, topType, 300);
 
         return topType;
+    }
+
+    /**
+     * ========== 新增的缓存清除方法 ==========
+     */
+
+    /**
+     * 新增识别记录（需要在你的Controller中调用这个方法）
+     */
+    public boolean addRecognitionRecord(RecognitionRecord record) {
+        // 保存到数据库
+        boolean result = this.save(record);
+        if (result) {
+            // 清除该用户的所有分页缓存
+            clearUserPageCache(record.getUserId());
+            // 清除该用户的top类型缓存
+            clearUserTopCache(record.getUserId());
+        }
+        return result;
+    }
+
+    /**
+     * 删除识别记录
+     */
+    public boolean deleteRecognitionRecord(Long recordId, Long userId) {
+        boolean result = this.removeById(recordId);
+        if (result) {
+            // 清除该用户的所有分页缓存
+            clearUserPageCache(userId);
+            // 清除该用户的top类型缓存
+            clearUserTopCache(userId);
+        }
+        return result;
+    }
+
+    /**
+     * 清除用户的所有分页缓存
+     */
+    public void clearUserPageCache(Long userId) {
+        // 删除该用户的所有分页缓存，格式如：record:page:123:1:10, record:page:123:2:10
+        String pattern = "record:page:" + userId + ":*";
+        redisUtil.deleteByPattern(pattern);
+        System.out.println("已清除用户 " + userId + " 的所有分页缓存");
+    }
+
+    /**
+     * 清除用户的top类型缓存
+     */
+    public void clearUserTopCache(Long userId) {
+        String key = "record:top:" + userId;
+        redisUtil.delete(key);
+        System.out.println("已清除用户 " + userId + " 的top类型缓存");
+    }
+
+    /**
+     * 获取当前用户的所有缓存键（用于调试）
+     */
+    public Set<String> getUserCacheKeys(Long userId) {
+        String pattern = "record:*:" + userId + "*";
+        return redisUtil.getKeys(pattern);
     }
 }

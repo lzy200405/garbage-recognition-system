@@ -1,5 +1,7 @@
 package edu.hubu.grs.service;
 
+import java.util.concurrent.CompletableFuture;
+
 public interface KnowledgeService {
 
     /**
@@ -7,5 +9,5 @@ public interface KnowledgeService {
      * @param userId 用户id
      * @return  生成的AI推荐
      */
-    String generateKnowledge(Long userId);
+    CompletableFuture<String> generateKnowledge(Long userId);
 }

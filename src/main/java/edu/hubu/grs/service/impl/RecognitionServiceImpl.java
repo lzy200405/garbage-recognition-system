@@ -3,6 +3,7 @@ package edu.hubu.grs.service.impl;
 import edu.hubu.grs.entity.RecognitionRecord;
 import edu.hubu.grs.mapper.RecognitionRecordMapper;
 import edu.hubu.grs.service.RecognitionService;
+import edu.hubu.grs.service.RecordService;
 import edu.hubu.grs.utils.AliyunRecognitionUtil;
 import edu.hubu.grs.utils.ImageUploadUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +27,9 @@ public class RecognitionServiceImpl implements RecognitionService {
     @Autowired
     private ImageUploadUtil imageUploadUtil;
 
+    @Autowired
+    private RecordService recordService;
+
 
     @Override
     public RecognitionRecord recognize(MultipartFile file, Long userId) {
@@ -35,8 +39,12 @@ public class RecognitionServiceImpl implements RecognitionService {
             String imagePath = imageUploadUtil.upload(file, userId);
             FileInputStream inputStream = new FileInputStream(
                     imageUploadUtil.getFile(imagePath));
+            System.out.println("保存图片，获取输入流" + imagePath);
+
             // 2. 调用阿里云识别
             String result = aliyunRecognitionUtil.recognize(inputStream);
+            System.out.println("调用阿里云识别");
+
 
             // 3. 保存记录
             record.setUserId(userId);
@@ -45,6 +53,12 @@ public class RecognitionServiceImpl implements RecognitionService {
             record.setRecognitionTime(LocalDateTime.now());
 
             recordMapper.insert(record);//入数据库
+
+            recordService.clearUserPageCache(userId);
+            recordService.clearUserTopCache(userId);
+
+            System.out.println("入库");
+
 
         } catch (Exception e) {
             // 回滚事务并删除已保存图片

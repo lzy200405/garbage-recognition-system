@@ -41,4 +41,9 @@ public class UserServiceTest {
 
         assertFalse(result, "重复用户名注册应该失败");
     }
+
+    @Test
+    void testLoginSuccess() {
+        System.out.println("123456");
+    }
 }

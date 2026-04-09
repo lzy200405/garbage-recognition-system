@@ -22,6 +22,7 @@ public class User {
     private String email;
 
     private LocalDateTime createTime;
+
     public Long getId() {
         return id;
     }

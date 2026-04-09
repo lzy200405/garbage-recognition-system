@@ -6,6 +6,8 @@ import edu.hubu.grs.service.KnowledgeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.concurrent.CompletableFuture;
+
 @RestController
 @RequestMapping("/knowledge")
 public class KnowledgeController {
@@ -16,12 +18,15 @@ public class KnowledgeController {
     private KnowledgeService knowledgeService;
 
     @GetMapping("/generate")
-    public Result<String> generate() {
-
+    public CompletableFuture<Result<String>> generate() {
         Long userId = StpUtil.getLoginIdAsLong();
 
-        String res = knowledgeService.generateKnowledge(userId);
-
-        return Result.success(res);
+        // 返回 CompletableFuture，Spring MVC 会自动处理异步
+        return knowledgeService.generateKnowledge(userId)
+                .thenApply(result -> Result.success(result))
+                .exceptionally(e -> {
+                    System.out.println("生成失败");
+                    return Result.fail("生成失败: " + e.getMessage());
+                });
     }
 }

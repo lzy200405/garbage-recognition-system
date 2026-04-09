@@ -11,6 +11,16 @@ import java.time.LocalDateTime;
 @Data
 @TableName("recognition_record")
 public class RecognitionRecord {
+    @TableId(type = IdType.AUTO)
+    private Long id;
+
+    private Long userId;
+
+    private String imageUrl;
+
+    private String recognitionResult;
+
+    private LocalDateTime recognitionTime;
 
     public Long getId() {
         return id;
@@ -52,14 +62,5 @@ public class RecognitionRecord {
         this.recognitionTime = recognitionTime;
     }
 
-    @TableId(type = IdType.AUTO)
-    private Long id;
 
-    private Long userId;
-
-    private String imageUrl;
-
-    private String recognitionResult;
-
-    private LocalDateTime recognitionTime;
 }

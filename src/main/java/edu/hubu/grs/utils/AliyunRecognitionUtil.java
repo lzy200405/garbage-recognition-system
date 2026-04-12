@@ -13,7 +13,7 @@ import java.io.InputStream;
 public class AliyunRecognitionUtil {
 
     private static final String ACCESS_KEY_ID = "LTAI5tLAnDk9bpbkNdgDJ5xK";
-    private static final String ACCESS_KEY_SECRET = "lsFpSMptZNLPVJUu0GIwsn3zE92xwg";
+    private static final String ACCESS_KEY_SECRET = "*";
 
     /**
      * 初始化客户端

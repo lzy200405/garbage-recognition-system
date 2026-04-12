@@ -1,0 +1,25 @@
+@startuml
+!theme plain
+left to right direction
+
+entity "用户" as user {
+  *user_id : INTEGER <<PK>>
+  --
+  username : VARCHAR(50)
+  password : VARCHAR(255)
+  email : VARCHAR(100)
+  created_at : TIMESTAMP
+}
+
+entity "识别记录" as record {
+  *record_id : INTEGER <<PK>>
+  --
+  image_path : VARCHAR(255)
+  recycle_type : VARCHAR(20)
+  recognition_time : TIMESTAMP
+  user_id : INTEGER <<FK>>
+}
+
+user ||--o{ record : "拥有"
+
+@enduml

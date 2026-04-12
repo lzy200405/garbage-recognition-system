@@ -226,11 +226,4 @@ public class DeepSeekUtil {
         }
     }
 
-    /**
-     * 清理缓存（可选）
-     */
-    public static void clearCache() {
-        getInstance().SYSTEM_PROMPT_CACHE.clear();
-        log.info("DeepSeekUtil 缓存已清理");
-    }
 }

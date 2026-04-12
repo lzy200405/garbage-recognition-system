@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
+import java.util.Map;
 
 import static edu.hubu.grs.utils.PasswordEncoderUtil.BCencode;
 
@@ -28,6 +29,7 @@ public class AuthController {
         User Encodeuser = new User();
         Encodeuser.setUsername(user.getUsername());
         Encodeuser.setPassword( BCencode(user.getPassword()));
+        Encodeuser.setEmail(user.getEmail());
         boolean success = userService.register(Encodeuser);
 
         if(success){
@@ -38,11 +40,14 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public Result<Object> login(@RequestParam String username,
-                                @RequestParam String password) {
-        String token = userService.login(username, BCencode(password));
+    public Result<Object> login(@RequestBody Map<String, String> loginRequest) {
+
+        String username = loginRequest.get("username");
+        String password = loginRequest.get("password");
+        String token = userService.login(username, password);
 
         if(token == null){
+            System.out.println("500");
             return Result.fail("用户名或密码错误");
         }
 

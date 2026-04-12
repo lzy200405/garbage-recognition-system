@@ -9,9 +9,12 @@ import edu.hubu.grs.mapper.UserMapper;
 import edu.hubu.grs.service.UserService;
 import edu.hubu.grs.utils.RedisUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Service;
 
 import java.security.MessageDigest;
+
+import static edu.hubu.grs.utils.PasswordEncoderUtil.BCencode;
 
 @Service
 public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements UserService {
@@ -22,20 +25,6 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     @Autowired
     private RedisUtil redisUtil;
 
-    // 简单MD5
-    private String md5(String str) {
-        try {
-            MessageDigest md = MessageDigest.getInstance("MD5");
-            byte[] bytes = md.digest(str.getBytes());
-            StringBuilder sb = new StringBuilder();
-            for (byte b : bytes) {
-                sb.append(String.format("%02x", b));
-            }
-            return sb.toString();
-        } catch (Exception e) {
-            throw new RuntimeException("加密失败");
-        }
-    }
 
     @Override
     public boolean register(User user) {
@@ -59,7 +48,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
 
         User user = userMapper.selectOne(wrapper);
 
-        if (user == null || !user.getPassword().equals(password)) {
+        if (user == null || !BCrypt.checkpw(password,user.getPassword())) {
             return null;
         }
 

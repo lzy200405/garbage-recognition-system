@@ -11,13 +11,6 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-    /**
-     * 处理其他所有异常
-     */
-    @ExceptionHandler(Exception.class)
-    public Result<String> handle(Exception e) {
-        return Result.fail(e.getMessage());
-    }
 
     /**
      * 处理 SaToken 未登录异常（token 无效/过期/未传）
@@ -29,4 +22,14 @@ public class GlobalExceptionHandler {
                 .status(HttpStatus.UNAUTHORIZED)
                 .body(Result.fail("token 无效，请重新登录"));
     }
+    
+    /**
+     * 处理其他所有异常
+     */
+    @ExceptionHandler(Exception.class)
+    public Result<String> handle(Exception e) {
+        return Result.fail(e.getMessage());
+    }
+
+
 }

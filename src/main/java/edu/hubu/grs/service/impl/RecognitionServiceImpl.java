@@ -69,12 +69,17 @@ public class RecognitionServiceImpl implements RecognitionService {
                 }
             }
 
-            // 区分异常类型
-            String msg = e.getMessage().contains("图片") ? "图片上传失败" :
-                    e.getMessage().contains("识别") ? "图像识别失败" :
-                            "记录保存失败";
+            String msg;
+            String errorMsg = e.getMessage();
+            if (errorMsg.contains("图片")) {
+                msg = "图片上传失败";
+            } else if (errorMsg.contains("识别")) {
+                msg = "图像识别失败";
+            } else {
+                msg = "记录保存失败";
+            }
             throw new RuntimeException(msg, e);
         }
-        return record;
+            return record;
     }
 }

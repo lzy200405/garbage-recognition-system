@@ -26,6 +26,6 @@ public class KnowledgeServiceImpl implements KnowledgeService {
         String garbageType = recordService.getTopGarbageType(userRecord);
 
         // 直接返回异步结果
-        return DeepSeekUtil.chatAsync(garbageType, Config.DEEPSEEK_SYSTEMPROMPT);
+        return deepSeekUtil.chatAsync(garbageType, Config.DEEPSEEK_SYSTEMPROMPT);
     }
 }

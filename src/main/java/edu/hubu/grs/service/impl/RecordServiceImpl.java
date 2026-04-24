@@ -97,10 +97,6 @@ public class RecordServiceImpl extends ServiceImpl<RecognitionRecordMapper, Reco
     }
 
     /**
-     * ========== 新增的缓存清除方法 ==========
-     */
-
-    /**
      * 新增识别记录（需要在你的Controller中调用这个方法）
      */
     public boolean addRecognitionRecord(RecognitionRecord record) {

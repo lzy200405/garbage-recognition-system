@@ -91,14 +91,11 @@ public class ImageUploadUtil {
         File dest = new File(userDir, fileName);
         System.out.println("目标文件路径: " + dest.getAbsolutePath());
 
-
-
         // 使用 Files.copy 作为备选
         System.out.println("尝试使用 Files.copy 备选方案");
         Path destPath = Paths.get(dest.getAbsolutePath());
         Files.copy(file.getInputStream(), destPath, StandardCopyOption.REPLACE_EXISTING);
         System.out.println("Files.copy 执行完成");
-
 
         // 8. 返回数据库路径
         String dbPath = userId + "/" + fileName;

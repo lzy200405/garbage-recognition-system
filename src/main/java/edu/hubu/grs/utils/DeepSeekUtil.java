@@ -99,7 +99,7 @@ public class DeepSeekUtil {
      * 异步聊天方法（不阻塞主线程）
      */
     @Async
-    public static CompletableFuture<String> chatAsync(String userMessage, String systemPrompt) {
+    public CompletableFuture<String> chatAsync(String userMessage, String systemPrompt) {
         return CompletableFuture.supplyAsync(() -> {
             return getInstance().doChat(userMessage, systemPrompt);
         });
